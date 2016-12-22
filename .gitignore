@@ -1,0 +1,6 @@
+*.txt
+app.config.php
+/nbproject/private/
+/nbproject/
+/node_modules
+tinymce_4.5.0_dev.zip

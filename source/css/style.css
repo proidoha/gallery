@@ -1,0 +1,50 @@
+body {padding:0; margin:0;}
+
+#wrapper {width: 100%; height: 100%;}
+
+div, nav, section { display:block; margin:0; padding:0;
+}
+
+a, a:visited {color: blue; }
+
+.main-nav { margin: 0 0px 40px;  width:100%; padding: 10px 0;}
+
+.main-nav, footer {  background: #096e98; margin:0 auto; color: #fff; font-family: Arial; font-weight:bold; font-size: 16px;}
+
+.copy {padding:5px 30px;}
+
+footer {  text-align: center; position: absolute; bottom: 0; left:0; width:100%;}
+
+.main-nav:after, .main-nav:before { clear:both; content: ""; display:table; }
+
+.nav {float:right;  padding:10px 30px; }
+
+.nav a {margin: 0 15px 0 0; color: #fff; text-decoration: none; transition: all ease 0.4s; }
+
+.nav a:hover, .nav a.active { /*text-decoration: underline;  */ color: orange;}
+
+
+
+/* Основной контент  */
+
+#main-content {min-height: 400px;  width: 1200px; margin: 0 auto;}
+
+/* Загрузка изображений */
+
+
+#upload-block {
+	width:1200px; margin:30px auto 0;
+}
+
+
+#upload, #preview { display: inline-block; vertical-align: top; }
+
+#upload { width:35%; margin-right: 15px;   }
+
+
+#upload input { margin: 15px 5px 35px 0; display:block; }
+
+#preview { width: 60%; }
+
+#preview h2 { margin-top: 11px; }
+
