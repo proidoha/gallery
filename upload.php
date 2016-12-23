@@ -9,9 +9,11 @@ include_once("/source/php/tpl/head.tpl"); ?>
 	<div id="wrapper">
 <?php include_once("/source/php/tpl/navigation.tpl"); ?>
 
+<div id="main-content">
+<section id="upload-block">
 <form method="post" enctype="multipart/form-data">
 
-<section id="upload-block">
+
 
 <div id="upload">
 
@@ -37,11 +39,17 @@ include_once("/source/php/tpl/head.tpl"); ?>
 
 </section>
 
+</div>
+
+	<?php include_once("/source/php/tpl/footer.tpl"); ?>
+
 	</div>
 
 
 
-	<?php include_once("/source/php/tpl/footer.tpl"); ?>
+
+
+		<?php include_once("/source/php/tpl/footer-script.tpl"); ?>
 
 	<script src="dist/uploadfile.js"> </script>
 

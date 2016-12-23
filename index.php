@@ -16,8 +16,11 @@ include_once("/source/php/tpl/head.tpl"); ?>
 
 	</div>
 
-
 	<?php include_once("/source/php/tpl/footer.tpl"); ?>
+
+</div>
+
+	<?php include_once("/source/php/tpl/footer-script.tpl"); ?>
 
 	</body>
 </html>

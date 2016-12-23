@@ -1,1 +1,8 @@
-{{#each uploaded}}<li><img src="{{this}}" /> </li>{{/each}}
+{{#each uploaded}}<li><img src="{{this}}" />
+<div class="img-overlay">
+	<span class="btns">
+	<span class="edit">Редактировать</span>
+	<span class="destroy">Удалить</span>
+	</span> 
+	</div>
+</li>{{/each}}

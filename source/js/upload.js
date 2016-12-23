@@ -8,7 +8,6 @@ var files;
 $('input[type=file]').change(function(){
     files = this.files;
 
-
 });
 
 
@@ -18,7 +17,17 @@ $('#upload .sbmt').on("click", function (e) {
 
 	e.preventDefault();
 
-	if ( files.length > 3) {
+
+	if ( typeof files !== "object" ) {
+
+alert("Ошибка! Не выбран ни один файл для загрузки!");
+
+return false;
+
+} 
+
+
+	else if ( files.length && files.length > 3) {
 
 		alert("Ошибка! Вы пытаетесь загрузить одновременно больше 3 файлов!");
 
@@ -27,19 +36,11 @@ $('#upload .sbmt').on("click", function (e) {
 
 
 
-
-console.log(files);
-
-
  var data = new FormData();
 
     $.each( files, function( key, value ){
         data.append( key, value );
     });
-
-console.log(data);
-
-// return false;
 
 
 $.ajax({
@@ -52,18 +53,20 @@ processData: false, // Не обрабатываем файлы
 contentType: false,
 success: function(resp ) {
 
-console.log(resp);
 
 if (resp.error == 0)  {
 
-console.log(resp);
+// console.log(resp);
 
 var tpl = require('./tpl/list-images.hbs')(resp);
 
 // console.log(resp.uploaded);
 
-$("#img-list").html( tpl );
+$("#img-list").append( tpl );
 
+// alert(resp.msg);
+
+$("input[type=file]").val("");
 
 
 }

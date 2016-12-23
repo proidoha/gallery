@@ -64,7 +64,11 @@ $ext = substr( $filename, strrpos($filename, ".") +1 );
 
  $newname = "upload/" . $filename;
 
-	 // Загрузка файла и вывод сообщения
+ $path_to_thumbs = "upload/mini/";
+
+ $miniName =   $path_to_thumbs . $filename;
+
+  	 // Загрузка файла и вывод сообщения
 
 	if ( !move_uploaded_file($file['tmp_name'], $path .$filename ) ) {
 		
@@ -76,7 +80,56 @@ $ext = substr( $filename, strrpos($filename, ".") +1 );
 
 else  {
 
-array_push($uploaded, $newname); 
+// 	 $im = imagecreatefromjpeg( $_SERVER["DOCUMENT_ROOT"]."/". $newname);
+
+// $ox = imagesx($im);
+//   $oy = imagesy($im);
+  
+//   $nx = 340;
+//   $ny = floor($oy * ($nx / $ox));
+//   $y = 282;
+  
+//   $nm = imagecreatetruecolor($nx, 282);
+  
+//   imagecopyresized($nm, $im, 0,0,0,0,$nx,$y,$ox,$oy);
+
+//   imagejpeg($nm, $_SERVER["DOCUMENT_ROOT"]."/". $path_to_thumbs . $filename);
+
+
+
+$nw = 340;
+$nh = 282;
+$source = $_SERVER["DOCUMENT_ROOT"]."/". $newname;
+ $imsize = getimagesize($source);
+        $w = $imsize[0];
+        $h = $imsize[1];
+$simg = imagecreatefromjpeg($source);
+$dimg = imagecreatetruecolor($nw, $nh);
+
+$wm = $w/$nw;
+$hm = $h/$nh;
+$h_height = $nh/2;
+$w_height = $nw/2;
+
+  if($w> $h) {
+            $adjusted_width = $w / $hm;
+            $half_width = $adjusted_width / 2;
+            $int_width = $half_width - $w_height;
+            imagecopyresampled($dimg,$simg,-$int_width,0,0,0,$adjusted_width,$nh,$w,$h);
+        } elseif(($w <$h) || ($w == $h)) {
+            $adjusted_height = $h / $wm;
+            $half_height = $adjusted_height / 2;
+            $int_height = $half_height - $h_height;
+ 
+            imagecopyresampled($dimg,$simg,0,-$int_height,0,0,$nw,$adjusted_height,$w,$h);
+        } else {
+            imagecopyresampled($dimg,$simg,0,0,0,0,$nw,$nh,$w,$h);
+        }
+            imagejpeg( $dimg, $_SERVER["DOCUMENT_ROOT"]. '/'. $miniName,100);
+
+
+
+array_push($uploaded, $miniName); 
 
 }
 
