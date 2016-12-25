@@ -82,10 +82,10 @@ modulesDirectories: ['node_modules'],
         new ExtractTextPlugin("[name].css"),
         new webpack.NoErrorsPlugin(),
 
-      new webpack.optimize.CommonsChunkPlugin({
-      name: "common",
-      minChunks: 2
-       }),
+      // new webpack.optimize.CommonsChunkPlugin({
+      // name: "common",
+      // minChunks: 2
+      //  }),
 
         new webpack.ProvidePlugin({
           // $: "jquery",

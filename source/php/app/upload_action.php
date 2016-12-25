@@ -1,6 +1,9 @@
 <?php
 $files =  $_FILES;
-// $data = $_POST;
+
+include('../db.php');
+
+set_time_limit ( 0 );
 
 define ("MAX_SIZE","2000");
 
@@ -22,6 +25,10 @@ $resp = ['msg' => '', 'error' => 0, 'uploaded' => array('src' => [])];
 // }
 
 $uploaded = [];
+
+$gallery = new Gallery();
+
+$i = 0;
 
 
 foreach ($_FILES as $file) {
@@ -70,7 +77,8 @@ $ext = substr( $filename, strrpos($filename, ".") +1 );
 
   	 // Загрузка файла и вывод сообщения
 
-	if ( !move_uploaded_file($file['tmp_name'], $path .$filename ) ) {
+
+	if ( !copy($file['tmp_name'], $path .$filename ) ) {
 		
 		$resp['error'] = 1;
 		$resp['msg'] = 'Ошибка! Не удалось загрузить изображения!';
@@ -100,9 +108,10 @@ else  {
 $nw = 340;
 $nh = 282;
 $source = $_SERVER["DOCUMENT_ROOT"]."/". $newname;
- $imsize = getimagesize($source);
-        $w = $imsize[0];
-        $h = $imsize[1];
+
+$imsize = getimagesize($source);
+$w = $imsize[0];
+$h = $imsize[1];
 $simg = imagecreatefromjpeg($source);
 $dimg = imagecreatetruecolor($nw, $nh);
 
@@ -129,11 +138,43 @@ $w_height = $nw/2;
 
 
 
-array_push($uploaded, $miniName); 
+$uploaded[$i]['mini'] = $miniName; 
+
+if ( !$gallery->add($newname, $miniName) ) { 
+
+$resp['error'] = 1;
+
+	$resp['msg'] = "Ошибка! Что-то пошло не так! Попробуйте позже.";
+
+	exit (json_encode($resp));
 
 }
 
+if ($gallery->getId()) $uploaded[$i]['id'] = $gallery->getId();
+
+else {
+
+$resp['error'] = 1;
+
+$resp['msg'] = 'Ошибка! Не удалось добавить изображение в базу! Попробуйте ещё раз!';
+
+exit (json_encode($resp));
+
+
 }
+
+
+
+}
+
+$i++;
+
+}
+
+// $resp['uploaded'] = [];
+
+http_response_code(200);
+
 $resp['uploaded'] = $uploaded;
 
 	$resp['msg'] = 'Все файлы успешно загружены!';
