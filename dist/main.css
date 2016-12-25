@@ -191,14 +191,14 @@ background: #00356E;
     cursor: pointer;
     transition: 0.7s background ease;
     font-weight:bold;
+    outline:none;
 } 
 
 #comments .sbmt:hover {
-background: #ff000c;
-
+background: orange;
 }
 
-#comments p {
+#comments-list .empty-view p {
 font-weight:bold;
 font-size:16px;
 line-height: 16px;
@@ -247,6 +247,7 @@ padding:0px;
 color:#666;
 font-style: italic;
 }
+
 
 #comments-list {
 	margin-bottom:30px;

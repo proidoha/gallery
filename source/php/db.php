@@ -3,15 +3,15 @@
 require_once "config.php";
 
 
-$host = DB_HOST;
-$dbname = DB_NAME;
-$password = DB_PASSWORD;
-$user = DB_USER;
-$dsn = "mysql:host=$host;dbname=$dbname";
-$opt = array(
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-);
+// $host = DB_HOST;
+// $dbname = DB_NAME;
+// $password = DB_PASSWORD;
+// $user = DB_USER;
+// $dsn = "mysql:host=$host;dbname=$dbname";
+// $opt = array(
+//     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+//     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+// );
 
 
 
@@ -139,6 +139,56 @@ else return false;
 }
 
 
+
+}
+
+class Comments extends Gallery {
+
+// id последнего созданного ресурса
+public $last_id = false;
+private $pdo;
+
+
+function __construct () {
+
+$host = DB_HOST;
+$dbname = DB_NAME;
+$password = DB_PASSWORD;
+$user = DB_USER;
+$dsn = "mysql:host=$host;dbname=$dbname";
+$opt = array(
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+);
+
+$this->pdo = new PDO($dsn, $user, $password, $opt);
+
+}
+
+public function add ($content, $img_id) {
+
+	$stmt = $this->pdo->prepare('INSERT INTO `gal_comments` (content, img_id) VALUES (?, ?)');
+
+$arr = [$content, $img_id];
+
+
+if ( $stmt->execute( $arr ) ) {
+
+$this->last_id = $this->pdo->lastInsertId();
+
+return true;
+}
+
+else return false;
+
+			}
+
+
+			public function getId() {
+
+return $this->last_id;
+
+			}
 
 
 

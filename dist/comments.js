@@ -59,11 +59,16 @@ var comments =
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	// [{id:1,content:"Комментарий"}]
-	var collection = new _backbone4.default.Collection();
+	var Collection = _backbone4.default.Collection.extend({
+	  url: "/source/php/app/comments.php"
+	});
+
+	var collection = new Collection();
 
 	var CommentModel = _backbone4.default.Model.extend({
 	  defaults: {
-	    content: ""
+	    content: "",
+	    img_id: window.app.img_id
 	  }
 	});
 
@@ -115,7 +120,14 @@ var comments =
 	    textarea: '.new-comment'
 	  },
 
-	  initialize: function initialize() {},
+	  events: {
+	    'click @ui.button': 'addComment'
+	  },
+
+	  initialize: function initialize() {
+
+	    return this;
+	  },
 	  onRender: function onRender() {
 
 	    console.log(111);
@@ -125,6 +137,33 @@ var comments =
 	    }));
 
 	    return this;
+	  },
+
+
+	  action: 'create',
+
+	  addComment: function addComment() {
+
+	    if (this.getOption('action') == "create") {
+
+	      var textarea = this.getUI('textarea');
+
+	      console.log(textarea);
+
+	      var content = $(textarea).val().trim();
+
+	      console.log(content);
+
+	      if (!content) {
+	        alert('Ошибка! Введите текст комментария!');
+
+	        return false;
+	      }
+
+	      this.collection.create({ content: content,
+	        img_id: 1
+	      }, { wait: true });
+	    }
 	  }
 	});
 

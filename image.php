@@ -44,10 +44,8 @@ $img = $gallery->getImg($data['id']);
 	</ol>
 
 	<div id="add-comments">
-<p>Оставьте комментарий для потомков:</p>
-	<textarea class="new-comment" name="new-comment">
-	
-	</textarea>
+<p style="font-weight:bold">Оставьте комментарий для потомков:</p>
+	<textarea class="new-comment" name="new-comment"></textarea>
 
 	<div class="clear"></div>
 
@@ -67,6 +65,15 @@ $img = $gallery->getImg($data['id']);
 </div>
 
 	<?php include_once("/source/php/tpl/footer-script.tpl"); ?>
+
+
+	<script> 
+
+window.app = {};
+
+app.img_id = <?=$data['id']?>
+
+	</script>
 
 	<script src="/dist/comments.js"></script>
 
