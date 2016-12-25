@@ -34,7 +34,7 @@ $i = 0;
 foreach ($_FILES as $file) {
 
 
-$filename = $file['name'];
+$filename = basename($file['name']);
 $size = filesize($file['tmp_name']);
 
  // Массив допустимых значений типа файла
@@ -67,18 +67,21 @@ $ext = substr( $filename, strrpos($filename, ".") +1 );
 
 	}
 
-	// $image_name= basename($filename);
 
- $newname = "upload/" . $filename;
+	// Убираем пробельные символы
+
+$correctfilename = str_replace(' ', '',  $filename);
+
+ $newname = "upload/" . $correctfilename;
 
  $path_to_thumbs = "upload/mini/";
 
- $miniName =   $path_to_thumbs . $filename;
+ $miniName =   $path_to_thumbs . $correctfilename;
 
   	 // Загрузка файла и вывод сообщения
 
 
-	if ( !copy($file['tmp_name'], $path .$filename ) ) {
+	if ( !copy($file['tmp_name'], $path .$correctfilename ) ) {
 		
 		$resp['error'] = 1;
 		$resp['msg'] = 'Ошибка! Не удалось загрузить изображения!';
@@ -139,6 +142,8 @@ $w_height = $nw/2;
 
 
 $uploaded[$i]['mini'] = $miniName; 
+
+$uploaded[$i]['src'] = $newname;
 
 if ( !$gallery->add($newname, $miniName) ) { 
 

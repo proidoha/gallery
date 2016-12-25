@@ -32,6 +32,12 @@ footer {  text-align: center; position: absolute; bottom: 0; left:0; width:100%;
 
 #main-content {min-height: 400px;  width: 1200px; margin: 0 auto; padding-bottom:60px;}
 
+#main-content:after, #img-list:after {
+content:"";
+display:table;
+clear:both;
+}
+
 /* Загрузка изображений */
 
 
@@ -65,7 +71,15 @@ footer {  text-align: center; position: absolute; bottom: 0; left:0; width:100%;
   float: left;
 position: relative;}
 
-#img-list li img {  width: 340px; height: 282px;margin: 0 auto; display:block; z-index: 10;}
+#img-list li img, #img-list .preview  {  width: 340px; height: 282px;margin: 0 auto; display:block; z-index: 10;}
+
+#img-list .preview {
+background-repeat: no-repeat;
+background-size:cover;
+background-position: center;
+
+}
+
 
 #img-list li:nth-child(2n) { margin-right:0;   float:right; }
 
@@ -81,9 +95,159 @@ height: 100%;
 opacity:1;
 }
 
+
+
 .img-overlay .btns {z-index:2000; position:absolute; top: 37%;
-    left: 70px; color: #fff;}
+    left: 30%; color: #fff;}
 
 .img-overlay .btns span {display:inline-block; margin:10px; cursor: pointer; transition: color ease 0.5s;}
 
-.img-overlay .btns span:hover {color: orange;}
+.img-overlay .btns span:hover, .btns span:hover a {color: orange;}
+
+
+.btns a {color: #fff; text-decoration: none;}
+
+
+/* Главная */
+
+
+.main-gallery {
+display:block;
+clear:both;
+margin: 10px auto 30px;
+}
+
+.clear {
+clear:both;
+}
+
+
+#img-list.main-list li {
+	margin-right:30px;
+	float: left;
+	margin-bottom: 30px;
+}
+
+#img-list.main-list .preview {
+    width: 372px ;
+    height: 282px;
+}
+
+#img-list.main-list .btns {
+left: 108px;
+top:38%;
+}
+
+.main-gallery #img-list li:nth-child(3n) {
+
+margin-right:0px !important;
+}
+
+
+/* Комментарии */
+
+
+#comments {
+display:block;
+clear:both;
+
+}
+
+#comments textarea {
+    height: 100px;
+    resize: none;
+    width: 50%;
+    display: block;
+    margin: 10px auto;
+    float:left;
+    clear: both;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: Arial;
+    box-shadow: 0px 0px 7px 2px #ddd;
+    outline: none;
+    color: #000;
+}
+
+#comments textarea:after {
+clear:both;
+display:table;
+content: "";
+float:none;
+}
+
+#comments .sbmt {
+display:inline-block;
+float:none;
+clear:both;
+margin:10px 0;
+background: #00356E;
+    border-radius: 5px;
+    padding: 10px;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: 0.7s background ease;
+    font-weight:bold;
+} 
+
+#comments .sbmt:hover {
+background: #ff000c;
+
+}
+
+#comments p {
+font-weight:bold;
+font-size:16px;
+line-height: 16px;
+margin: 10px 0;
+padding:0;
+}
+
+.bigImg {
+min-height:300px;
+}
+
+#comments {
+ margin: 30px 0;
+}
+
+
+#comments h3 {border-bottom: 2px solid orange; display:inline-block;
+margin:15px 0;
+}
+
+
+.bigImg .big-preview img {
+max-width:600px;
+min-width:300px;
+max-height:600px;
+display:block;
+}
+
+#comments-list {
+display:block;
+clear:both;
+margin:15px 0;
+/*list-style:none;*/
+padding:0;
+line-height:15px;
+font-size:14px;
+}
+
+#comments-list li {
+margin-bottom:10px;
+display:block;
+padding:0px;
+}
+
+#comments-list .empty-view {
+color:#666;
+font-style: italic;
+}
+
+#comments-list {
+	margin-bottom:30px;
+}

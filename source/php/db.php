@@ -20,6 +20,8 @@ interface GalleryInterface {
 public function add($src,$mini);
 public function remove($id);
 public function edit( $title = "", $description = "" );
+public function getAll();
+public function getImg($id);
 
 }
 
@@ -78,13 +80,26 @@ return $this->last_id;
 
 
 public function remove($id) {
+// Получаем информацию об изображении для удаления файла
+$data = $this->getImg($id);
 
+if (!$data) return false;
 
 $stmt = $this->pdo->prepare('DELETE FROM `gal_images` WHERE id = :id');
 
 $stmt->bindParam(':id', $id);
 
-if ( $stmt->execute() )  return true;
+if ( $stmt->execute() )   { 
+
+$src = $_SERVER['DOCUMENT_ROOT'] . '/'. $data['src'];
+$mini = $_SERVER['DOCUMENT_ROOT'] . '/'.$data['mini'];
+
+if ( unlink($src)&&unlink($mini)) return true;
+
+else return false;
+
+
+}
 
 else return false;
 
@@ -95,6 +110,35 @@ public function edit( $title = "", $description = "" )
 
 
 }
+
+
+public function getAll() {
+
+	$stmt = $this->pdo->prepare("SELECT * FROM `gal_images`");
+
+if ($stmt->execute())
+{
+ return $stmt->fetchAll();
+}
+
+else return false;
+
+}
+
+public function getImg($id) {
+
+	$stmt = $this->pdo->prepare("SELECT * FROM `gal_images` WHERE id = ?");
+
+if ($stmt->execute( array($id) ) )
+{
+ return $stmt->fetch();
+}
+
+else return false;
+
+}
+
+
 
 
 

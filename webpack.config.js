@@ -12,10 +12,10 @@ module.exports = {
 //	context: __dirname + '/app',
 	context: __dirname,
     entry: { 
-
   app: './source/js/main.js',
   main: ['./source/css/style.css'],
-  uploadfile: './source/js/upload.js'
+  uploadfile: './source/js/upload.js',
+  comments: './source/js/comments.js'
 },
     output: {
     	path: __dirname + '/dist',

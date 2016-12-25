@@ -1,5 +1,5 @@
 <?php
-unset($_FILES, $_POST);
+// unset($_FILES, $_POST);
 
 $url = $_SERVER["REQUEST_URI"];
 
