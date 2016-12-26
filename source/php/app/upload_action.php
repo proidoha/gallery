@@ -14,15 +14,6 @@ $tmp_path = 'tmp';
 // массив для ответа
 $resp = ['msg' => '', 'error' => 0, 'uploaded' => array('src' => [])]; 
 
-// if ( empty($data['photo'])  ) { 
-
-// $resp['error'] = 1;
-
-// $resp['msg'] = "Ошибка! Один из файлов не передан, попробуйте ещё раз.";
-
-// die( json_encode($resp) );
-
-// }
 
 $uploaded = [];
 
@@ -141,9 +132,9 @@ $w_height = $nw/2;
 
 
 
-$uploaded[$i]['mini'] = $miniName; 
+// $uploaded[$i]['mini'] = $miniName; 
 
-$uploaded[$i]['src'] = $newname;
+$uploaded[$i]['src'] = $miniName;
 
 if ( !$gallery->add($newname, $miniName) ) { 
 

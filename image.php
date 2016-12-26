@@ -13,6 +13,10 @@ $gallery = new Gallery;
 
 $img = $gallery->getImg($data['id']);
 
+$Comments = new Comments();
+
+$comments = $Comments->getAll($data['id'], true);
+
 ?>
 
 <body>
@@ -44,17 +48,17 @@ $img = $gallery->getImg($data['id']);
 	</ol>
 
 	<div id="add-comments">
-<p style="font-weight:bold">Оставьте комментарий для потомков:</p>
+<p class="descript" style="font-weight:bold">Оставьте комментарий для потомков:</p>
 	<textarea class="new-comment" name="new-comment"></textarea>
 
 	<div class="clear"></div>
 
 	<button class="sbmt">Отправить</button>
+	<button class="cancel">Отмена</button>
 
 	</div>
 
 	</section>
-
 
 	</div>
 
@@ -71,7 +75,9 @@ $img = $gallery->getImg($data['id']);
 
 window.app = {};
 
-app.img_id = <?=$data['id']?>
+app.img_id = <?=$data['id']?>;
+
+app.comments = <?=$comments?>;
 
 	</script>
 

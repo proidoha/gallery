@@ -41,9 +41,8 @@ var comments =
 /******/ 	return __webpack_require__(0);
 /******/ })
 /************************************************************************/
-/******/ ({
-
-/***/ 0:
+/******/ ([
+/* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(_) {"use strict";
@@ -60,123 +59,207 @@ var comments =
 
 	// [{id:1,content:"Комментарий"}]
 	var Collection = _backbone4.default.Collection.extend({
-	  url: "/source/php/app/comments.php"
+		url: "/source/php/app/comments.php"
 	});
 
-	var collection = new Collection();
+	var commentsColl = window.app.comments;
+
+	var collection = new Collection(commentsColl);
+
+	// console.log(window.app.img_id);
 
 	var CommentModel = _backbone4.default.Model.extend({
-	  defaults: {
-	    content: "",
-	    img_id: window.app.img_id
-	  }
+		defaults: {
+			content: "",
+			img_id: window.app.img_id
+		}
 	});
 
 	var emptyView = _backbone2.default.View.extend({
-	  template: function template(data) {
-	    return _.template("<p>Комментариев пока нет.</p>")();
-	  },
+		template: function template(data) {
+			return _.template("<p>Комментариев пока нет.</p>")();
+		},
 
-	  className: "empty-view",
-	  replaceElement: true,
-	  model: CommentModel
+		className: "empty-view",
+		replaceElement: true,
+		model: CommentModel
 	});
 
 	var Comment = _backbone2.default.View.extend({
-	  tagName: "li",
-	  template: function template(data) {
-	    return __webpack_require__(102)(data);
-	  }
+		tagName: "li",
+
+		initialize: function initialize() {
+
+			this.listenTo(this.model, 'change:content', this.render);
+
+			return this;
+		},
+		template: function template(data) {
+			return __webpack_require__(30)(data);
+		},
+
+
+		ui: {
+			destroy: '.destroy',
+			edit: '.edit'
+		},
+		events: {
+			'click @ui.destroy': 'remove'
+		},
+		triggers: {
+			'click @ui.edit': 'edit:comment'
+		},
+
+		remove: function remove() {
+
+			var view = this;
+
+			function react(model, resp) {
+
+				alert(resp.msg);
+			};
+
+			this.model.destroy({ wait: true, success: react, error: react });
+
+			return this;
+		},
+		edit: function edit() {
+
+			// console.log('Редактирование комментария');
+
+			return this;
+		}
 	});
 
 	// Вид списка комментариев
 
 	var CommentsList = _backbone2.default.CollectionView.extend({
-	  emptyView: emptyView,
-	  tagName: "ol",
-	  id: "comments-list",
-	  childView: Comment,
-	  replaceElement: true
+		emptyView: emptyView,
+		tagName: "ol",
+		id: "comments-list",
+		childView: Comment,
+		replaceElement: true
 	});
 
 	// Блок комментариев
 
 	var CommentsBlock = _backbone2.default.View.extend({
-	  collection: collection,
-	  el: "#comments",
-	  template: false,
-	  regions: {
-	    list: {
-	      el: "#comments-list",
-	      replaceElement: true
-	    }
-	    // forma: {
-	    // el:"#add-comments"
-	    // }
+		collection: collection,
+		el: "#comments",
+		template: false,
+		regions: {
+			list: {
+				el: "#comments-list",
+				replaceElement: true
+			}
+			// forma: {
+			// el:"#add-comments"
+			// }
 
-	  },
-	  ui: {
-	    button: '.sbmt',
-	    textarea: '.new-comment'
-	  },
+		},
+		ui: {
+			button: '.sbmt',
+			textarea: '.new-comment',
+			descript: 'p.descript',
+			cancel: '.cancel'
+		},
 
-	  events: {
-	    'click @ui.button': 'addComment'
-	  },
+		events: {
+			'click @ui.button': 'addComment',
+			'click @ui.cancel': 'cancel'
+		},
 
-	  initialize: function initialize() {
+		initialize: function initialize() {
 
-	    return this;
-	  },
-	  onRender: function onRender() {
+			return this;
+		},
+		onRender: function onRender() {
 
-	    console.log(111);
+			this.showChildView('list', new CommentsList({
+				collection: this.collection
+			}));
 
-	    this.showChildView('list', new CommentsList({
-	      collection: this.collection
-	    }));
-
-	    return this;
-	  },
+			return this;
+		},
 
 
-	  action: 'create',
+		action: 'create',
 
-	  addComment: function addComment() {
+		addComment: function addComment() {
 
-	    if (this.getOption('action') == "create") {
+			console.log(this.getOption('action'));
 
-	      var textarea = this.getUI('textarea');
+			var textarea = this.getUI('textarea');
 
-	      console.log(textarea);
+			var content = $(textarea).val().trim();
 
-	      var content = $(textarea).val().trim();
+			var view = this;
 
-	      console.log(content);
+			if (!content) {
+				alert('Ошибка! Введите текст комментария!');
 
-	      if (!content) {
-	        alert('Ошибка! Введите текст комментария!');
+				return false;
+			}
 
-	        return false;
-	      }
+			if (this.getOption('action') == "create") {
 
-	      this.collection.create({ content: content,
-	        img_id: 1
-	      }, { wait: true });
-	    }
-	  }
+				// Создание нового комментария
+
+				this.collection.create({ content: content,
+					img_id: window.app.img_id
+				}, { wait: true,
+					success: function success() {
+						$(textarea).val('');
+					}
+				});
+			} else {
+
+				this.editChild.model.save({ content: content }, {
+					wait: true,
+					success: function success(model, resp) {
+
+						$(textarea).val('');
+
+						view.action = 'create';
+
+						alert(resp.msg);
+
+						view.getUI('descript').hide().fadeIn(300).text('Оставьте комментарий для потомков:');
+					}
+				});
+			}
+		},
+		onChildviewEditComment: function onChildviewEditComment(child) {
+
+			var oldText = child.model.get('content');
+
+			var textarea = this.getUI('textarea');
+
+			$(textarea).val(oldText);
+
+			this.action = 'edit';
+
+			this.editChild = child;
+
+			this.getUI('descript').hide().fadeIn(300).text('Редактирование комментария:');
+		},
+		cancel: function cancel() {
+
+			this.action = '';
+
+			this.getUI('descript').hide().fadeIn(300).text('Оставьте комментарий для потомков:');
+
+			this.getUI('textarea').val('');
+		}
 	});
 
 	var commentsBlock = new CommentsBlock();
 
 	commentsBlock.render();
-
-	console.log(commentsBlock);
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-
-/***/ 1:
+/* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// MarionetteJS (Backbone.Marionette)
@@ -3512,8 +3595,7 @@ var comments =
 
 
 /***/ },
-
-/***/ 2:
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global) {//     Backbone.js 1.3.3
@@ -5440,8 +5522,7 @@ var comments =
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-
-/***/ 3:
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscore.js 1.8.3
@@ -6995,8 +7076,7 @@ var comments =
 
 
 /***/ },
-
-/***/ 4:
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -17222,8 +17302,7 @@ var comments =
 
 
 /***/ },
-
-/***/ 5:
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Backbone.Radio v2.0.0
@@ -17578,8 +17657,10 @@ var comments =
 	//# sourceMappingURL=./backbone.radio.js.map
 
 /***/ },
-
-/***/ 9:
+/* 6 */,
+/* 7 */,
+/* 8 */,
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Create a simple path alias to allow browserify to resolve
@@ -17588,8 +17669,7 @@ var comments =
 
 
 /***/ },
-
-/***/ 10:
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -17661,8 +17741,7 @@ var comments =
 
 
 /***/ },
-
-/***/ 11:
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -17772,8 +17851,7 @@ var comments =
 
 
 /***/ },
-
-/***/ 12:
+/* 12 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -17903,8 +17981,7 @@ var comments =
 
 
 /***/ },
-
-/***/ 13:
+/* 13 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -17961,8 +18038,7 @@ var comments =
 
 
 /***/ },
-
-/***/ 14:
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -18014,8 +18090,7 @@ var comments =
 
 
 /***/ },
-
-/***/ 15:
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -18060,8 +18135,7 @@ var comments =
 
 
 /***/ },
-
-/***/ 16:
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -18161,8 +18235,7 @@ var comments =
 
 
 /***/ },
-
-/***/ 17:
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -18193,8 +18266,7 @@ var comments =
 
 
 /***/ },
-
-/***/ 18:
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -18229,8 +18301,7 @@ var comments =
 
 
 /***/ },
-
-/***/ 19:
+/* 19 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -18262,8 +18333,7 @@ var comments =
 
 
 /***/ },
-
-/***/ 20:
+/* 20 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -18281,8 +18351,7 @@ var comments =
 
 
 /***/ },
-
-/***/ 21:
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -18321,8 +18390,7 @@ var comments =
 
 
 /***/ },
-
-/***/ 22:
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -18344,8 +18412,7 @@ var comments =
 
 
 /***/ },
-
-/***/ 23:
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -18380,8 +18447,7 @@ var comments =
 
 
 /***/ },
-
-/***/ 24:
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -18434,8 +18500,7 @@ var comments =
 
 
 /***/ },
-
-/***/ 25:
+/* 25 */
 /***/ function(module, exports) {
 
 	// Build out our basic SafeString type
@@ -18456,8 +18521,7 @@ var comments =
 
 
 /***/ },
-
-/***/ 26:
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -18760,8 +18824,7 @@ var comments =
 
 
 /***/ },
-
-/***/ 27:
+/* 27 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/* global window */
@@ -18788,8 +18851,9 @@ var comments =
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-
-/***/ 102:
+/* 28 */,
+/* 29 */,
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Handlebars = __webpack_require__(9);
@@ -18797,12 +18861,10 @@ var comments =
 	module.exports = (Handlebars["default"] || Handlebars).template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
 	    var helper;
 
-	  return "<p>"
-	    + container.escapeExpression(((helper = (helper = helpers.content || (depth0 != null ? depth0.content : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"content","hash":{},"data":data}) : helper)))
-	    + "</p>\r\n<span class=\"edit\">Редактировать</span> <span class=\"destroy\">Удалить</span>";
+	  return container.escapeExpression(((helper = (helper = helpers.content || (depth0 != null ? depth0.content : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"content","hash":{},"data":data}) : helper)))
+	    + "\r\n<p><span class=\"edit\">Редактировать</span> <span class=\"destroy\">Удалить</span></p>";
 	},"useData":true});
 
 /***/ }
-
-/******/ });
+/******/ ]);
 //# sourceMappingURL=comments.js.map

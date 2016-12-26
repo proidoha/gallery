@@ -7,7 +7,11 @@ const Collection = Bb.Collection.extend({
 url: "/source/php/app/comments.php"
 });
 
-let collection = new Collection();
+let commentsColl = window.app.comments;
+
+let collection = new Collection(commentsColl);
+
+// console.log(window.app.img_id);
 
 const CommentModel = Bb.Model.extend({
 defaults: {
@@ -29,10 +33,57 @@ model: CommentModel
 
 const Comment = Mn.View.extend({
 	tagName: "li",
+
+initialize() {
+
+this.listenTo(this.model, 'change:content', this.render);
+
+return this;	
+},
+
 template(data){
  return require('./tpl/one-comment.hbs')(data);
 
+},
+
+ui: {
+destroy: '.destroy',
+edit: '.edit'
+},
+events: {
+'click @ui.destroy': 'remove',
+// 'click @ui.edit': 'edit'
+},
+triggers: {
+'click @ui.edit': 'edit:comment'
+},
+
+remove() {
+
+let view =  this;
+
+	function react (model, resp) {
+
+	alert(resp.msg);
+
+};
+
+this.model.destroy({ wait:true, success: react, error: react});
+
+return this;
+
+},
+
+edit() {
+
+
+
+// console.log('Редактирование комментария');
+
+return this;
 }
+
+
 });
 
 
@@ -65,12 +116,15 @@ replaceElement: true
 },
 ui: {
 button: '.sbmt',
-textarea: '.new-comment'
+textarea: '.new-comment',
+descript: 'p.descript', 
+cancel: '.cancel'
 },
 
 events:
 {
-'click @ui.button': 'addComment'
+'click @ui.button': 'addComment',
+'click @ui.cancel': 'cancel'
 },
 
 initialize() {
@@ -79,8 +133,6 @@ return this;
 },
 
 onRender(){
-
-console.log( 111);
 
 	this.showChildView('list', new CommentsList({
       collection: this.collection
@@ -93,17 +145,13 @@ action: 'create',
 
 addComment () {
 
-if (this.getOption('action') == "create")
-{
+console.log(this.getOption('action'));
 
 let textarea = this.getUI('textarea');
 
-console.log(textarea);
-
 let content = $(textarea).val().trim();
 
-console.log(content);
-
+let view =  this;
 
 
 if (!content) { alert('Ошибка! Введите текст комментария!');
@@ -111,12 +159,70 @@ if (!content) { alert('Ошибка! Введите текст коммента�
 return false;
 }
 
-this.collection.create({content: content, 
-img_id: 1
-}, {wait:true});
+if (this.getOption('action') == "create")
+{
+
+
+// Создание нового комментария
+
+this.collection.create({content: content,
+img_id: window.app.img_id
+}, 
+{wait:true,
+success: function() {
+	$(textarea).val('');}
+}
+);
+
 
 }
 
+else {
+
+this.editChild.model.save({content: content},
+{
+	wait:true, 
+	success: function(model, resp) {
+
+	$(textarea).val('');
+
+view.action = 'create';
+
+alert(resp.msg);
+
+
+view.getUI('descript').hide().fadeIn(300).text('Оставьте комментарий для потомков:');
+
+}
+});
+
+}
+
+},
+
+onChildviewEditComment(child) {
+
+let oldText = child.model.get('content');
+
+let textarea = this.getUI('textarea');
+
+$(textarea).val(oldText);
+
+this.action = 'edit';
+
+this.editChild = child;
+
+this.getUI('descript').hide().fadeIn(300).text('Редактирование комментария:');
+
+},
+
+cancel() {
+
+this.action = '';
+
+this.getUI('descript').hide().fadeIn(300).text('Оставьте комментарий для потомков:');
+
+this.getUI('textarea').val('');
 
 }
 
@@ -126,4 +232,3 @@ let commentsBlock = new CommentsBlock();
 
 commentsBlock.render();
 
-console.log(commentsBlock);

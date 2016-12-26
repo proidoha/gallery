@@ -63,7 +63,8 @@ clear:both;
 
 #img-list {margin: 10px 0;  padding:0; list-style: none; display:block; }
 
-#img-list li { padding: 0; margin:0 10px 10px 0; display:block; float:left;  overflow: hidden;border: 4px solid #eee;
+#img-list li { padding: 0; margin:0 10px 10px 0; display:block; float:left;  overflow: hidden;
+	border: 4px solid #efefef;
 	/*width:340px;
     height: 280px;*/
     box-sizing: border-box;
@@ -131,6 +132,7 @@ clear:both;
 #img-list.main-list .preview {
     width: 372px ;
     height: 282px;
+    border-radius: 3px;
 }
 
 #img-list.main-list .btns {
@@ -178,7 +180,7 @@ content: "";
 float:none;
 }
 
-#comments .sbmt {
+#comments .sbmt, #comments .cancel {
 display:inline-block;
 float:none;
 clear:both;
@@ -192,9 +194,10 @@ background: #00356E;
     transition: 0.7s background ease;
     font-weight:bold;
     outline:none;
+    margin-right: 7px;
 } 
 
-#comments .sbmt:hover {
+#comments .sbmt:hover, #comments .cancel:hover {
 background: orange;
 }
 
@@ -238,9 +241,10 @@ font-size:14px;
 }
 
 #comments-list li {
-margin-bottom:10px;
-display:block;
+margin-bottom:20px;
+/*display:block;*/
 padding:0px;
+font-size: 16px;
 }
 
 #comments-list .empty-view {
@@ -251,4 +255,27 @@ font-style: italic;
 
 #comments-list {
 	margin-bottom:30px;
+	list-style-position:inside;
+}
+
+
+#comments-list .edit, #comments-list .destroy {
+cursor: pointer;
+	font-weight:bold;
+	font-size:12px;
+border-bottom: 1px dashed transparent;
+transition: color 0.8s ease;
+margin-right: 5px;
+}
+
+#comments-list .edit:hover {
+border-bottom: 1px dashed #666;
+}
+
+#comments-list .destroy:hover {
+border-bottom: 1px dashed #666;
+}
+
+#comments-list li p {
+margin:5px 0;
 }

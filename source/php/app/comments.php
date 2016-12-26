@@ -29,48 +29,40 @@ $response['error'] = 'Ошибка! Что-то пошло не так! Попр
 
 }
 
-exit( json_encode($response) );
+// exit( json_encode($response) );
 
 }
 
-
+// Удаление комментариев
 else if ( $method == 'delete' ) { 
-
-// $input = json_decode(file_get_contents('php://input'), true); 
-
 
 $request = explode('/', substr($_SERVER['PATH_INFO'], 1));
 $id = array_shift($request);
 
 
-$stmt = $pdo->prepare('DELETE FROM `comments` WHERE id = :id');
-
-$stmt->bindParam(':id', $id);
-
-if ( $stmt->execute() ) {
-
-	$response['error'] = 0;
-
-$response['msg'] = "Ваш комментарий успешно удалён!";
+if ( $comments->remove($id) ) {
 
 http_response_code(200);
 
-
-} 
-
-else {
-
-	http_response_code(500);
-
-$response['error'] = "Ошибка! Что-то пошло не так! Попробуйте позже.";
+$response['error'] = 0;
+$response['msg'] = 'Комментарий успешно удалён!';
 
 }
 
-header('Content-Type: application/json');
+else {
 
-$response = json_encode( $response ); 
+http_response_code(500);
 
-exit( $response );
+
+$response['error'] = 'Ошибка! Что-то пошло не так! Попробуйте повторить данное действие позже или обратитесь к разработчику.';
+
+}
+
+// header('Content-Type: application/json');
+
+// $response = json_encode( $response ); 
+
+// exit( $response );
 
 }
 
@@ -83,36 +75,29 @@ $input = json_decode(file_get_contents('php://input'), true);
 $request = explode('/', substr($_SERVER['PATH_INFO'], 1));
 $id = array_shift($request);
 
-
-$stmt = $pdo->prepare('UPDATE `comments` SET content = :content, author = :author WHERE id = :id');
-
-// $stmt->bindParam(':id', $id);
-
-$arr =  array( 'content' => $input['content'], 'author' => $input['author'], 'id' => $id );
-
-if ( $stmt->execute( $arr ) ) {
-
-$response['error'] = 0;
-
-$response['msg'] = "Ваш комментарий успешно изменён!";
+if ( $comments->edit($id, $input['content']) ) {
 
 http_response_code(200);
 
+$response['error'] = 0;
+$response['msg'] = 'Комментарий успешно изменён!';
 
-} 
+}
 
 else {
 
-	http_response_code(500);
+http_response_code(500);
 
-$response['error'] = "Ошибка! Что-то пошло не так! Попробуйте позже.";
+
+$response['error'] = 'Ошибка! Что-то пошло не так! Попробуйте повторить данное действие позже или обратитесь к разработчику.';
+
+}
+
 
 }
 
 header('Content-Type: application/json');
 
-$response = json_encode( $response  ); 
+$response = json_encode( $response ); 
 
 exit( $response );
-
-}

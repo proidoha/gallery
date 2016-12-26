@@ -2,25 +2,11 @@
 
 require_once "config.php";
 
-
-// $host = DB_HOST;
-// $dbname = DB_NAME;
-// $password = DB_PASSWORD;
-// $user = DB_USER;
-// $dsn = "mysql:host=$host;dbname=$dbname";
-// $opt = array(
-//     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-//     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-// );
-
-
-
 interface GalleryInterface {
 
 public function add($src,$mini);
 public function remove($id);
-public function edit( $title = "", $description = "" );
-public function getAll();
+public function getAll($id, $encode);
 public function getImg($id);
 
 }
@@ -94,10 +80,11 @@ if ( $stmt->execute() )   {
 $src = $_SERVER['DOCUMENT_ROOT'] . '/'. $data['src'];
 $mini = $_SERVER['DOCUMENT_ROOT'] . '/'.$data['mini'];
 
-if ( unlink($src)&&unlink($mini)) return true;
+if (file_exists($src)) unlink($src);
 
-else return false;
+if (file_exists($mini)) unlink($mini);
 
+return true;
 
 }
 
@@ -112,7 +99,7 @@ public function edit( $title = "", $description = "" )
 }
 
 
-public function getAll() {
+public function getAll($id = null, $encode = false) {
 
 	$stmt = $this->pdo->prepare("SELECT * FROM `gal_images`");
 
@@ -184,12 +171,68 @@ else return false;
 			}
 
 
+			public function getAll($img_id, $encode) {
+
+	$stmt = $this->pdo->prepare("SELECT * FROM `gal_comments` WHERE img_id = ?");
+
+if ($stmt->execute( array($img_id) ) )
+{
+
+$comments =  $stmt->fetchAll();
+
+	$comments =  ($encode) ?  json_encode($comments) : $comments;
+
+	return $comments;
+ 
+}
+
+else return false;
+
+}
+
+
 			public function getId() {
 
 return $this->last_id;
 
 			}
 
+public function remove($id) {
+
+$stmt = $this->pdo->prepare('DELETE FROM `gal_comments` WHERE id = :id');
+
+$stmt->bindParam(':id', $id);
+
+if ( $stmt->execute() )   { 
+
+return true;
+
+}
+
+else return false;
+
+			}
+
+
+			public function edit( $id, $content )
+{
+
+
+$stmt = $this->pdo->prepare('UPDATE `gal_comments` SET content = :content  WHERE id = :id');
+
+$stmt->bindParam(':id', $id);
+$stmt->bindParam(':content', $content );
+
+if ( $stmt->execute() )   { 
+
+return true;
+
+}
+
+else return false;
+
+
+}
 
 
 }
