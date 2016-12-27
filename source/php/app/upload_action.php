@@ -9,8 +9,6 @@ define ("MAX_SIZE","2000");
 
 $path = $_SERVER["DOCUMENT_ROOT"]. '/upload/';
 
-$tmp_path = 'tmp';
-
 // массив для ответа
 $resp = ['msg' => '', 'error' => 0, 'uploaded' => array('src' => [])]; 
 
@@ -34,7 +32,7 @@ $types = array('jpeg', 'jpg');
  // Обработка запроса
 // Проверяем тип файла
 
-$ext = substr( $filename, strrpos($filename, ".") +1 );
+$ext = strtolower(substr( $filename, strrpos($filename, ".") +1 ));
 
 	if (!in_array($ext, $types) ) {
 		

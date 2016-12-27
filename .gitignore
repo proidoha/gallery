@@ -3,6 +3,10 @@ app.config.php
 /nbproject/private/
 /nbproject/
 /node_modules
-tinymce_4.5.0_dev.zip
 /dist/*.map
 /dist/*.map
+/dist/*.map
+/upload/*.jpeg
+/upload/mini/*.jpeg
+/upload/*.jpg
+/upload/mini/*.jpg
