@@ -7,8 +7,6 @@ set_time_limit ( 0 );
 
 define ("MAX_SIZE","2000");
 
-$path = $_SERVER["DOCUMENT_ROOT"]. '/upload/';
-
 // массив для ответа
 $resp = ['msg' => '', 'error' => 0, 'uploaded' => array('src' => [])]; 
 
@@ -44,6 +42,18 @@ $ext = strtolower(substr( $filename, strrpos($filename, ".") +1 ));
 
 	}
 
+
+if (preg_match('/[а-я]+/iu', $filename)) {
+
+$resp['msg'] = 'Ошибка! Название изображения не должно содержать русских букв!';
+
+		$resp['error'] = 1;
+
+		die(json_encode($resp));
+
+	}
+
+
 	 // Проверяем размер файла
 	if ($size > (MAX_SIZE * 1024) )
 	{ 
@@ -55,6 +65,7 @@ $ext = strtolower(substr( $filename, strrpos($filename, ".") +1 ));
 		die( json_encode($resp) );
 
 	}
+
 
 
 	// Убираем пробельные символы
@@ -69,8 +80,8 @@ $correctfilename = str_replace(' ', '',  $filename);
 
   	 // Загрузка файла и вывод сообщения
 
-
-	if ( !copy($file['tmp_name'], $path .$correctfilename ) ) {
+correctfilename
+	if ( !copy($file['tmp_name'], CORE_PATH . $newname ) ) {
 		
 		$resp['error'] = 1;
 		$resp['msg'] = 'Ошибка! Не удалось загрузить изображения!';
@@ -80,26 +91,9 @@ $correctfilename = str_replace(' ', '',  $filename);
 
 else  {
 
-// 	 $im = imagecreatefromjpeg( $_SERVER["DOCUMENT_ROOT"]."/". $newname);
-
-// $ox = imagesx($im);
-//   $oy = imagesy($im);
-  
-//   $nx = 340;
-//   $ny = floor($oy * ($nx / $ox));
-//   $y = 282;
-  
-//   $nm = imagecreatetruecolor($nx, 282);
-  
-//   imagecopyresized($nm, $im, 0,0,0,0,$nx,$y,$ox,$oy);
-
-//   imagejpeg($nm, $_SERVER["DOCUMENT_ROOT"]."/". $path_to_thumbs . $filename);
-
-
-
 $nw = 340;
 $nh = 282;
-$source = $_SERVER["DOCUMENT_ROOT"]."/". $newname;
+$source = CORE_PATH. $newname;
 
 $imsize = getimagesize($source);
 $w = $imsize[0];
@@ -126,7 +120,7 @@ $w_height = $nw/2;
         } else {
             imagecopyresampled($dimg,$simg,0,0,0,0,$nw,$nh,$w,$h);
         }
-            imagejpeg( $dimg, $_SERVER["DOCUMENT_ROOT"]. '/'. $miniName,100);
+            imagejpeg( $dimg, CORE_PATH. $miniName,100);
 
 
 
@@ -164,8 +158,6 @@ exit (json_encode($resp));
 $i++;
 
 }
-
-// $resp['uploaded'] = [];
 
 http_response_code(200);
 

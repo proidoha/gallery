@@ -109,9 +109,6 @@ list:{
 el:"#comments-list",
 replaceElement: true
 }
-// forma: {
-// el:"#add-comments"
-// }
 
 },
 ui: {
@@ -218,7 +215,7 @@ this.getUI('descript').hide().fadeIn(300).text('Редактирование к�
 
 cancel() {
 
-this.action = '';
+this.action = 'create';
 
 this.getUI('descript').hide().fadeIn(300).text('Оставьте комментарий для потомков:');
 

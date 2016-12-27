@@ -3,8 +3,6 @@ include('../db.php');
 
 set_time_limit ( 0 );
 
-$method = strtolower( $_SERVER['REQUEST_METHOD'] );
-
 $gallery = new Gallery();
 
 $request = explode('/', substr($_SERVER['PATH_INFO'], 1));

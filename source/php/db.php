@@ -7,7 +7,6 @@ interface GalleryInterface {
 public function add($src,$mini);
 public function remove($id);
 public function getAll($id, $encode);
-public function getImg($id);
 
 }
 
@@ -129,7 +128,7 @@ else return false;
 
 }
 
-class Comments extends Gallery {
+class Comments implements GalleryInterface {
 
 // id последнего созданного ресурса
 public $last_id = false;
