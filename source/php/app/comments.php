@@ -8,8 +8,6 @@ if ($method == 'post') {
 
 $post = json_decode(file_get_contents('php://input'), true); 
 
-// $comments->add($post['content'], $post['img_id']);
-
 if ( $comments->add($post['content'], $post['img_id']) ) {
 
 http_response_code(200);
@@ -24,12 +22,9 @@ else {
 
 http_response_code(500);
 
-
 $response['error'] = 'Ошибка! Что-то пошло не так! Попробуйте повторить данное действие позже или обратитесь к разработчику.';
 
 }
-
-// exit( json_encode($response) );
 
 }
 
@@ -53,16 +48,9 @@ else {
 
 http_response_code(500);
 
-
 $response['error'] = 'Ошибка! Что-то пошло не так! Попробуйте повторить данное действие позже или обратитесь к разработчику.';
 
 }
-
-// header('Content-Type: application/json');
-
-// $response = json_encode( $response ); 
-
-// exit( $response );
 
 }
 
@@ -70,7 +58,6 @@ $response['error'] = 'Ошибка! Что-то пошло не так! Попр
 else if ( $method == 'put' || $method == 'patch' ) { 
 
 $input = json_decode(file_get_contents('php://input'), true); 
-
 
 $request = explode('/', substr($_SERVER['PATH_INFO'], 1));
 $id = array_shift($request);
@@ -87,7 +74,6 @@ $response['msg'] = 'Комментарий успешно изменён!';
 else {
 
 http_response_code(500);
-
 
 $response['error'] = 'Ошибка! Что-то пошло не так! Попробуйте повторить данное действие позже или обратитесь к разработчику.';
 

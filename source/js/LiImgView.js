@@ -54,20 +54,9 @@ return this;
 
 },
 
-
-destroy() {
-
-this.$el.fadeIn(200);
-	
-	// this.destroy();
-
-	return this;
-},
-
 remove() {
 
 this.$el.remove();
-
 
 }
 

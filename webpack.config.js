@@ -82,16 +82,13 @@ modulesDirectories: ['node_modules'],
         new ExtractTextPlugin("[name].css"),
         new webpack.NoErrorsPlugin(),
 
-      // new webpack.optimize.CommonsChunkPlugin({
-      // name: "common",
-      // minChunks: 2
-      //  }),
+      new webpack.optimize.CommonsChunkPlugin({
+      name: "common",
+      minChunks: 2
+       }),
 
         new webpack.ProvidePlugin({
-          // $: "jquery",
           _: "underscore",
-          // Backbone: "backbone",
-          // Marionette: 'backbone.marionette'
             }),
 
          new webpack.DefinePlugin({
@@ -101,10 +98,6 @@ modulesDirectories: ['node_modules'],
     ],
 
     noParse: [/node_modules\/(underscore|jquery|angular|backbone|marionette|backbone\.marionette|jquery)/],
-
-  //     externals: {
-  //   'jquery': '$'
-  // }
 
   };
 
